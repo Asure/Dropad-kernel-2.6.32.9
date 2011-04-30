@@ -1,0 +1,17 @@
+#
+# Crzboys configuration
+#
+
+menuconfig CRZBOYS
+	tristate "Crzboys support"
+	default n
+	help
+	  This enables support Crztech Controller
+
+if CRZBOYS
+
+config CRZBOYS_MEM_DBG
+	bool "Crzboys Memory Debuger"
+	default n
+
+endif

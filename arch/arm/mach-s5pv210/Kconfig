@@ -1,0 +1,240 @@
+# arch/arm/mach-s5pv210/Kconfig
+#
+# Copyright (c) 2010 Samsung Electronics Co., Ltd.
+#		http://www.samsung.com/
+#
+# Licensed under GPLv2
+
+# Configuration options for the S5PV210/S5PC110
+
+if ARCH_S5PV210
+
+config CPU_S5PV210
+	bool
+	select PLAT_S5P
+	select S5PV210_PM if PM
+	help
+	  Enable S5PV210 CPU support
+
+choice
+	prompt "Select machine type"
+	depends on ARCH_S5PV210
+	default MACH_MANGO210
+
+config MACH_MANGO210
+	bool "MANGO210"
+	select CPU_S5PV210
+	select ARCH_SPARSEMEM_ENABLE
+	select S3C_DEV_HSMMC
+	select S3C_DEV_HSMMC1 if !S5PV210_SD_CH0_8BIT
+	select S3C_DEV_HSMMC2
+	select S3C_DEV_HSMMC3 if !S5PV210_SD_CH2_8BIT
+	select S5PV210_SETUP_SDHCI
+	select PCI
+	help
+	  Machine support for Crztech MANGO210
+
+
+config MACH_SMDKV210
+	bool "SMDKV210"
+	select CPU_S5PV210
+	select ARCH_SPARSEMEM_ENABLE
+	select S3C_DEV_HSMMC
+	select S3C_DEV_HSMMC1 if !S5PV210_SD_CH0_8BIT
+	select S3C_DEV_HSMMC2
+	select S3C_DEV_HSMMC3 if !S5PV210_SD_CH2_8BIT
+	select S5PV210_SETUP_SDHCI
+	select PCI
+	help
+	  Machine support for Samsung SMDKV210
+
+config MACH_SMDKC110
+	bool "SMDKC110"
+	select CPU_S5PV210
+	select DISCONTIGMEM
+	select S3C_DEV_HSMMC
+	select S3C_DEV_HSMMC1 if !S5PV210_SD_CH0_8BIT
+	select S3C_DEV_HSMMC2
+	select S3C_DEV_HSMMC3 if !S5PV210_SD_CH2_8BIT
+	select S5PV210_SETUP_SDHCI
+	select ARCH_DISCONTIGMEM_ENABLE
+	select PCI
+	help
+	  Machine support for Samsung SMDKC110
+	  S5PC110(MCP) is one of package option of S5PV210
+
+endchoice
+
+choice
+	prompt "Board revision"
+	depends on MACH_MANGO210
+	default MACH_MANGO210_EVT1
+
+config MACH_MANGO210_EVT0
+	bool "EVT0"
+	help
+	  Support EVT0
+
+config MACH_MANGO210_EVT1
+	bool "EVT1"
+	help
+	  Support EVT1
+endchoice
+choice
+        prompt "WiFi Module Select "
+        depends on MACH_MANGO210
+        default MANGO_WIFI_CSR
+
+config MANGO_WIFI_CSR
+        bool "WiFi CSR"
+        help
+          Support CSR
+
+config MANGO_WIFI_W2CBW003
+        bool "WiFi W2CBW003"
+        help
+          Support W2CBW003
+endchoice
+
+choice
+	prompt "Select DMC0 memory type for S5PC110"
+	depends on MACH_SMDKC110
+	default S5PC110_MEM_DMC0_ONEDRAM
+
+config S5PC110_MEM_DMC0_ONEDRAM
+	bool "OneDRAM"
+	help
+	  If you have S5PC110 B-Type or D-Type, select it
+
+config S5PC110_MEM_DMC0_MDDR
+	bool "mDDR"
+	help
+	  if you have S5PC110 H-Type or N-Type, select it
+
+endchoice
+
+choice
+	prompt "CPU revision"
+	depends on CPU_S5PV210
+	default CPU_S5PV210_EVT1
+
+config CPU_S5PV210_EVT0
+	bool "EVT0"
+	help
+	  Support EVT0
+
+config CPU_S5PV210_EVT1
+	bool "EVT1"
+	help
+	  Support EVT1
+endchoice
+
+config DM9000_16BIT
+	bool "DM9000 16-bit"
+	depends on MACH_SMDKV210 || MACH_VOGUEV210 || MACH_SMDKC110
+	default n
+	help
+	  Support DM9000 ethernet controller with 16bit data bus
+
+config S5PV210_PM
+	bool
+	help
+	  Power Management code common to S5PV210
+
+config S5PV210_SETUP_FB_S3C
+	bool
+	default y
+	help
+	  Setup code for S5PV210 FIMD
+
+config S5PV210_SETUP_FIMC0
+	bool
+	default y
+	help
+	  Common setup code for FIMC controller 0.
+
+config S5PV210_SETUP_FIMC1
+	bool
+	default y
+	help
+	  Common setup code for FIMC controller 1.
+
+config S5PV210_SETUP_FIMC2
+	bool
+	default y
+	help
+	  Common setup code for FIMC controller 2.
+
+config S5PV210_SETUP_CSIS
+	bool
+	default y
+	help
+	  Common setup code for MIPI-CSIS
+
+
+config S5PV210_SETUP_SDHCI
+	bool
+	depends on PLAT_S5P
+	default y
+	help
+	  Internal helper functions for S5PCV210 based SDHCI systems
+
+comment "MMC/SD slot setup"
+depends on PLAT_S5P
+
+menu "Use 8-bit bus width"
+config S5PV210_SD_CH0_8BIT
+bool "Channel 0"
+depends on PLAT_S5P
+default n
+help
+IF channel 0 uses 8-bit bus, channel 1 is disabled.
+
+config S5PV210_SD_CH2_8BIT
+bool "Channel 2"
+depends on PLAT_S5P
+default n
+help
+IF channel 2 uses 8-bit bus, channel 3 is disabled.
+endmenu
+
+menu "Use dynamic clock gating"
+config MMC_CH0_CLOCK_GATING
+	bool "Channel 0"
+	depends on S3C_DEV_HSMMC
+	default n
+	help
+		This feature turns off clock of channel 0
+		for power saving when MMC/SD cards are not used.
+config MMC_CH1_CLOCK_GATING
+	bool "Channel 1"
+	depends on S3C_DEV_HSMMC1
+	default n
+	help
+		This feature turns off clock of channel 1
+		for power saving when MMC/SD cards are not used.
+config MMC_CH2_CLOCK_GATING
+	bool "Channel 2"
+	depends on S3C_DEV_HSMMC2
+	default n
+	help
+		This feature turns off clock of channel 2
+		for power saving when MMC/SD cards are not used.
+config MMC_CH3_CLOCK_GATING
+	bool "Channel 3"
+	depends on S3C_DEV_HSMMC3
+	default n
+	help
+		This feature turns off clock of channel 3
+		for power saving when MMC/SD cards are not used.
+endmenu
+
+# platform specific device setup
+# ADC part
+config S5PV210_ADC
+        bool "S5PV210_ ADC Driver"
+        depends on CPU_S5PV210
+        help
+          ADC (A/D Conversion) driver for Samsung S5PV210.
+
+endif

@@ -1,0 +1,114 @@
+# arch/arm/plat-s5p/Kconfig
+#
+# Copyright (c) 2009 Samsung Electronics Co., Ltd.
+#		http://www.samsung.com/
+#
+# Licensed under GPLv2
+
+config PLAT_S5P
+	bool
+	depends on (ARCH_S5P6440 || ARCH_S5P6442 || ARCH_S5PV210)
+	default y
+	select ARM_VIC
+	select NO_IOPORT
+	select ARCH_REQUIRE_GPIOLIB
+	select S3C_GPIO_TRACK
+	select SAMSUNG_GPIOLIB_4BIT
+	select S3C_GPIO_CFG_S3C64XX
+	select S3C_GPIO_PULL_UPDOWN
+	select S3C_GPIO_CFG_S3C24XX
+	select PLAT_SAMSUNG
+	select SAMSUNG_CLKSRC
+	select SAMSUNG_IRQ_VIC_TIMER
+	select SAMSUNG_IRQ_UART
+	help
+	  Base platform code for Samsung's S5P series SoC.
+
+config SYSTIMER_S5P
+	bool
+	depends on (ARCH_S5P6442 || ARCH_S5PV210)
+	default y
+	help
+	  Support System Timer for S5P Series
+
+config S5P_HIGH_RES_TIMERS
+        bool "HRtimer and Dynamic Tick support"
+        select GENERIC_TIME
+        select GENERIC_CLOCKEVENTS
+        select HIGH_RES_TIMERS
+        default n
+        help
+          Support for HRtimer and Dynamic Tick system.
+	  
+choice
+        prompt "Select HRT source timer"
+        depends on S5P_HIGH_RES_TIMERS
+        default HRT_RTC
+
+#config HRT_PWM
+#        bool "PWM timers(2/4) (Not yet)"
+#        help
+#          PWM timers are used as HRT
+config HRT_RTC
+        bool "RTC/SYSTEM TIMER"
+        help
+          RTC and System timer are used as HRT
+endchoice
+
+config S5P_DMA_PL330
+	bool
+	depends on ARCH_S5PV210
+	default y
+	help
+	  Support DMA PL330 for all SAMSUNG S5P SOCs.
+
+choice
+	prompt "Select PL330 DMA Driver"
+	depends on S5P_DMA_PL330
+	
+config OLD_DMA_PL330
+	bool "OLD S3C DMA Driver"
+
+config NEW_DMA_PL330
+	bool "NEW S3C DMA Driver"
+	select PL330
+	
+endchoice
+
+config S5P_SETUP_I2C0
+	bool
+	default y
+	help
+	  Common setup code for i2c bus 0.
+
+config S5P_SETUP_I2C1
+	bool
+	default y
+	help
+	  Common setup code for i2c bus 1.
+
+config S5P_SETUP_I2C2
+	bool
+	default y
+	help
+	  Common setup code for i2c bus 2.
+
+# MFC part
+config S5P_DEV_MFC
+	bool
+	default y
+	help
+	  Compile in platform device definitions for MFC
+
+config S5P_SETUP_MFC
+	bool
+	default y
+	help
+	  Common setup code for MFC
+
+config S5P_LPAUDIO
+	bool "Support S5P Low Power(LP) Audio"
+	depends on (CPU_IDLE && PM && SND_S3C_I2SV2_SOC)
+	default y
+	help
+	  s5p low power audio enable / disable

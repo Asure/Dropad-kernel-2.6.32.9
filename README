@@ -1,3 +1,37 @@
+What is this
+------------
+
 A 2.6.32.9 GPL Licensed Kernel for the Dropad A8
-This is not my work. Most of it comes from the MangoV210 project.
+This is not all my own work. Most of it comes from the MangoV210 project.
+
+30-4-2011
+---------
+
+Many things are working so far, but not everything is 100%:
+
+- Ext4, UBI, MTD, CPU support etc.
+- Boot up and into Android init. 
+- ADB works
+- Android starts, but doesn't like the missing ALSA (see below)
+
+Todo/Not working:
+-----------------
+
+- ALSA WM8676 soc sound (stub driver is in place.)
+- MTD mapping See note.. (workaround by adding 'mtdparts' to u-boot. Need to add to kernel build.)
+- Buttons (cause kernel panic when you press power.)
+- Proper recovery image instead of tar.gz parsing crap from urbetter..
+- Overclock
+
+Note:
+setenv bootargs "mtdparts=s5pv210-nand:0x20000@0x80000(misc),0x800000@0x100000(recovery),0x600000@0x900000(kernel),0xEB00000@0x1500000(rootfs-combin),0x200000@0x1300000(param)"
+
+Untested
+--------
+
+- PowerVR
+- Wifi
+- Touchscreen
+
+
 

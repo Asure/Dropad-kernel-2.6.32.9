@@ -1,0 +1,412 @@
+Kconfig:	select SND_SOC_WM8976 if I2C
+Makefile:snd-soc-wm8976-objs := wm8976.o
+Makefile:obj-$(CONFIG_SND_SOC_WM8976)    += snd-soc-wm8976.o
+wm8976.c: * wm8976.c  --  WM8976 ALSA Soc Audio driver
+wm8976.c:#include "wm8976.h"
+wm8976.c:#define AUDIO_NAME "wm8976"
+wm8976.c:#define WM8976_VERSION "0.4"
+wm8976.c:struct snd_soc_codec_device soc_codec_dev_wm8976;
+wm8976.c: * wm8976 register cache
+wm8976.c: * We can't read the WM8976 register space when we are
+wm8976.c:static const u16 wm8976_reg[WM8976_CACHEREGNUM] = {
+wm8976.c: * read wm8976 register cache
+wm8976.c:static inline unsigned int wm8976_read_reg_cache(struct snd_soc_codec  *codec,
+wm8976.c:	if (reg == WM8976_RESET)
+wm8976.c:	if (reg >= WM8976_CACHEREGNUM)
+wm8976.c: * write wm8976 register cache
+wm8976.c:static inline void wm8976_write_reg_cache(struct snd_soc_codec  *codec,
+wm8976.c:	if (reg >= WM8976_CACHEREGNUM)
+wm8976.c: * write to the WM8976 register space
+wm8976.c:int wm8976_write(struct snd_soc_codec  *codec, unsigned int reg,
+wm8976.c:	 *   D15..D9 WM8976 register offset
+wm8976.c:	wm8976_write_reg_cache (codec, reg, value);
+wm8976.c:EXPORT_SYMBOL_GPL(wm8976_write);
+wm8976.c:#define wm8976_reset(c)	wm8976_write(c, WM8976_RESET, 0)
+wm8976.c:static const char *wm8976_companding[] = { "Off", "NC", "u-law", "A-law" };
+wm8976.c://static const char *wm8976_deemp[] = { "None", "32kHz", "44.1kHz", "48kHz" };
+wm8976.c:static const char *wm8976_eqmode[] = { "Capture", "Playback" };
+wm8976.c:static const char *wm8976_bw[] = {"Narrow", "Wide" };
+wm8976.c:static const char *wm8976_eq1[] = {"80Hz", "105Hz", "135Hz", "175Hz" };
+wm8976.c:static const char *wm8976_eq2[] = {"230Hz", "300Hz", "385Hz", "500Hz" };
+wm8976.c:static const char *wm8976_eq3[] = {"650Hz", "850Hz", "1.1kHz", "1.4kHz" };
+wm8976.c:static const char *wm8976_eq4[] = {"1.8kHz", "2.4kHz", "3.2kHz", "4.1kHz" };
+wm8976.c:static const char *wm8976_eq5[] = {"5.3kHz", "6.9kHz", "9kHz", "11.7kHz" };
+wm8976.c:static const char *wm8976_alc[] = {"ALC", "Limiter" };
+wm8976.c:static const struct soc_enum wm8976_enum[] = {
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_COMP, 1, 4, wm8976_companding),	/* adc */
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_COMP, 3, 4, wm8976_companding),	/* dac */
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ1,  8, 2, wm8976_eqmode),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ1,  5, 4, wm8976_eq1),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ2,  8, 2, wm8976_bw),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ2,  5, 4, wm8976_eq2),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ3,  8, 2, wm8976_bw),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ3,  5, 4, wm8976_eq3),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ4,  8, 2, wm8976_bw),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ4,  5, 4, wm8976_eq4),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ5,  8, 2, wm8976_bw),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_EQ5,  5, 4, wm8976_eq5),
+wm8976.c:	SOC_ENUM_SINGLE(WM8976_ALC3,  8, 2, wm8976_alc),
+wm8976.c:static const struct snd_kcontrol_new wm8976_snd_controls[] = 
+wm8976.c:	SOC_SINGLE("Digital Loopback Switch", WM8976_COMP, 0, 1, 0),
+wm8976.c:	SOC_ENUM("DAC Companding", wm8976_enum[1]),
+wm8976.c:	SOC_ENUM("ADC Companding", wm8976_enum[0]),
+wm8976.c:	SOC_SINGLE("High Pass Filter Switch", WM8976_ADC, 8, 1, 0),	
+wm8976.c:	SOC_SINGLE("High Pass Cut Off", WM8976_ADC, 4, 7, 0),	
+wm8976.c:	SOC_DOUBLE("ADC Inversion Switch", WM8976_ADC, 0, 1, 1, 0),
+wm8976.c:	SOC_SINGLE("Capture Volume", WM8976_ADCVOL,  0, 255, 0),
+wm8976.c:	SOC_SINGLE("Capture Boost(+20dB)", WM8976_ADCBOOST, 8, 1, 0),
+wm8976.c:	SOC_SINGLE("Capture PGA ZC Switch", WM8976_INPPGA,  7, 1, 0),
+wm8976.c:	SOC_SINGLE("Capture PGA Volume", WM8976_INPPGA,  0, 63, 0),
+wm8976.c:        SOC_SINGLE("ALC Enable Switch", WM8976_ALC1,  8, 1, 0),
+wm8976.c:        SOC_SINGLE("ALC Capture Max Gain", WM8976_ALC1,  3, 7, 0),
+wm8976.c:        SOC_SINGLE("ALC Capture Min Gain", WM8976_ALC1,  0, 7, 0),
+wm8976.c:        SOC_SINGLE("ALC Capture ZC Switch", WM8976_ALC2,  8, 1, 0),
+wm8976.c:        SOC_SINGLE("ALC Capture Hold", WM8976_ALC2,  4, 7, 0),
+wm8976.c:        SOC_SINGLE("ALC Capture Target", WM8976_ALC2,  0, 15, 0),
+wm8976.c:        SOC_ENUM("ALC Capture Mode", wm8976_enum[12]),
+wm8976.c:        SOC_SINGLE("ALC Capture Decay", WM8976_ALC3,  4, 15, 0),
+wm8976.c:        SOC_SINGLE("ALC Capture Attack", WM8976_ALC3,  0, 15, 0),
+wm8976.c:        SOC_SINGLE("ALC Capture Noise Gate Switch", WM8976_NGATE,  3, 1, 0),
+wm8976.c:        SOC_SINGLE("ALC Capture Noise Gate Threshold", WM8976_NGATE,  0, 7, 0),
+wm8976.c:	SOC_ENUM("Eq-3D Mode Switch", wm8976_enum[2]),	
+wm8976.c:	SOC_ENUM("Eq1 Cut-Off Frequency", wm8976_enum[3]),	
+wm8976.c:	SOC_SINGLE("Eq1 Volume", WM8976_EQ1,  0, 31, 1),	
+wm8976.c:	SOC_ENUM("Eq2 BandWidth Switch", wm8976_enum[4]),	
+wm8976.c:	SOC_ENUM("Eq2 Centre Frequency", wm8976_enum[5]),	
+wm8976.c:	SOC_SINGLE("Eq2 Volume", WM8976_EQ2,  0, 31, 1),
+wm8976.c:	SOC_ENUM("Eq3 BandWidth Switch", wm8976_enum[6]),	
+wm8976.c:	SOC_ENUM("Eq3 Centre Frequency", wm8976_enum[7]),	
+wm8976.c:	SOC_SINGLE("Eq3 Volume", WM8976_EQ3,  0, 31, 1),
+wm8976.c:	SOC_ENUM("Eq4 BandWidth Switch", wm8976_enum[8]),	
+wm8976.c:	SOC_ENUM("Eq4 Centre Frequency", wm8976_enum[9]),	
+wm8976.c:	SOC_SINGLE("Eq4 Volume", WM8976_EQ4,  0, 31, 1),
+wm8976.c:	SOC_ENUM("Eq5 BandWidth Switch", wm8976_enum[10]),	
+wm8976.c:	SOC_ENUM("Eq5 Centre Frequency", wm8976_enum[11]),	
+wm8976.c:	SOC_SINGLE("Eq5 Volume", WM8976_EQ5,  0, 31, 1),
+wm8976.c:	SOC_DOUBLE_R("PCM Playback Volume", WM8976_DACVOLL, WM8976_DACVOLR, 0, 127, 0),
+wm8976.c:	SOC_DOUBLE_R("Headphone Playback Switch", WM8976_HPVOLL,  WM8976_HPVOLR, 6, 1, 1),
+wm8976.c:	SOC_DOUBLE_R("Headphone Playback Volume", WM8976_HPVOLL,  WM8976_HPVOLR, 0, 50, 0),
+wm8976.c:	SOC_DOUBLE_R("Speaker Playback Switch", WM8976_SPKVOLL,  WM8976_SPKVOLR, 6, 1, 1),
+wm8976.c:	SOC_DOUBLE_R("Speaker Playback Volume", WM8976_SPKVOLL,  WM8976_SPKVOLR, 0, 58, 0),
+wm8976.c:static int wm8976_add_controls(struct snd_soc_codec *codec)
+wm8976.c:	for (i = 0; i < ARRAY_SIZE(wm8976_snd_controls); i++) {
+wm8976.c:		err = snd_ctl_add(codec->card, snd_soc_cnew(&wm8976_snd_controls[i],codec, NULL));
+wm8976.c:static const struct snd_kcontrol_new wm8976_left_mixer_controls[] = {
+wm8976.c:	SOC_DAPM_SINGLE("Left Playback Switch", WM8976_OUTPUT, 6, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Right Playback Switch", WM8976_MIXL, 0, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Bypass Playback Switch", WM8976_MIXL, 1, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Left Aux Switch", WM8976_MIXL, 5, 1, 0),
+wm8976.c:static const struct snd_kcontrol_new wm8976_right_mixer_controls[] = {
+wm8976.c:	SOC_DAPM_SINGLE("Left Playback Switch", WM8976_OUTPUT, 5, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Right Playback Switch", WM8976_MIXR, 0, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Right Aux Switch", WM8976_MIXR, 5, 1, 0),
+wm8976.c:static const struct snd_kcontrol_new wm8976_out4_mixer_controls[] = {
+wm8976.c:	SOC_DAPM_SINGLE("VMID", WM8976_MONOMIX, 6, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Out4 LeftMixer Switch", WM8976_MONOMIX, 4, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Out4 LeftDac Switch", WM8976_MONOMIX, 3, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Out4 RightMixer Switch", WM8976_MONOMIX, 1, 1, 0),	
+wm8976.c:	SOC_DAPM_SINGLE("Out4 RightDac Switch", WM8976_MONOMIX, 0, 1, 0),
+wm8976.c:static const struct snd_kcontrol_new wm8976_out3_mixer_controls[] = {
+wm8976.c:	SOC_DAPM_SINGLE("VMID", WM8976_OUT3MIX, 6, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Out3 Out4Mixer Switch", WM8976_OUT3MIX, 3, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Out3 BypassADC Switch", WM8976_OUT3MIX, 2, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Out3 LeftMixer Switch", WM8976_OUT3MIX, 1, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("Out3 LeftDac Switch", WM8976_OUT3MIX, 0, 1, 0),
+wm8976.c:static const struct snd_kcontrol_new wm8976_boost_controls[] = {
+wm8976.c:	SOC_DAPM_SINGLE("Mic PGA Switch", WM8976_INPPGA,  6, 1, 1),
+wm8976.c:	SOC_DAPM_SINGLE("AuxL Volume", WM8976_ADCBOOST, 0, 7, 0),
+wm8976.c:	SOC_DAPM_SINGLE("L2 Volume", WM8976_ADCBOOST, 4, 7, 0),
+wm8976.c:static const struct snd_kcontrol_new wm8976_micpga_controls[] = {
+wm8976.c:	SOC_DAPM_SINGLE("MICP Switch", WM8976_INPUT, 0, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("MICN Switch", WM8976_INPUT, 1, 1, 0),
+wm8976.c:	SOC_DAPM_SINGLE("L2 Switch", WM8976_INPUT, 2, 1, 0),
+wm8976.c:static const struct snd_soc_dapm_widget wm8976_dapm_widgets[] = {
+wm8976.c:	SND_SOC_DAPM_MICBIAS("Mic Bias", WM8976_POWER1, 4, 0),
+wm8976.c:	SND_SOC_DAPM_MIXER("Left Mixer", WM8976_POWER3, 2, 0,
+wm8976.c:	&wm8976_left_mixer_controls[0], ARRAY_SIZE(wm8976_left_mixer_controls)),
+wm8976.c:	SND_SOC_DAPM_PGA("Left Out 1", WM8976_POWER2, 7, 0, NULL, 0),
+wm8976.c:	SND_SOC_DAPM_PGA("Left Out 2", WM8976_POWER3, 6, 0, NULL, 0),
+wm8976.c:	SND_SOC_DAPM_DAC("Left DAC", "Left HiFi Playback", WM8976_POWER3, 0, 0),
+wm8976.c:	SND_SOC_DAPM_MIXER("Right Mixer", WM8976_POWER3, 3, 0,
+wm8976.c:	&wm8976_right_mixer_controls[0], ARRAY_SIZE(wm8976_right_mixer_controls)),
+wm8976.c:	SND_SOC_DAPM_PGA("Right Out 1", WM8976_POWER2, 8, 0, NULL, 0),
+wm8976.c:	SND_SOC_DAPM_PGA("Right Out 2", WM8976_POWER3, 5, 0, NULL, 0),
+wm8976.c:	SND_SOC_DAPM_DAC("Right DAC", "Right HiFi Playback", WM8976_POWER3, 1, 0),
+wm8976.c:	SND_SOC_DAPM_ADC("ADC", "HiFi Capture", WM8976_POWER2, 0, 0),
+wm8976.c://	SND_SOC_DAPM_PGA("Mic PGA", WM8976_POWER2, 2, 0,
+wm8976.c://	&wm8976_micpga_controls[0],ARRAY_SIZE(wm8976_micpga_controls)),	
+wm8976.c:	SND_SOC_DAPM_MIXER("Mic PGA", WM8976_POWER2, 2, 0,
+wm8976.c:	&wm8976_micpga_controls[0],ARRAY_SIZE(wm8976_micpga_controls)),	
+wm8976.c:	SND_SOC_DAPM_MIXER("Boost Mixer", WM8976_POWER2, 4, 0,
+wm8976.c:	&wm8976_boost_controls[0], ARRAY_SIZE(wm8976_boost_controls)),
+wm8976.c:	SND_SOC_DAPM_MIXER("Out3 Mixer", WM8976_POWER1, 6, 0,
+wm8976.c:	&wm8976_out3_mixer_controls[0], ARRAY_SIZE(wm8976_out3_mixer_controls)),	
+wm8976.c:	SND_SOC_DAPM_PGA("Out 3", WM8976_POWER1, 7, 0, NULL, 0),
+wm8976.c:	SND_SOC_DAPM_MIXER("Out4 Mixer", WM8976_POWER1, 7, 0,
+wm8976.c:	&wm8976_out4_mixer_controls[0], ARRAY_SIZE(wm8976_out4_mixer_controls)),
+wm8976.c:	SND_SOC_DAPM_PGA("Out 4", WM8976_POWER3, 8, 0, NULL, 0),
+wm8976.c:static int wm8976_add_widgets(struct snd_soc_codec *codec)
+wm8976.c:	snd_soc_dapm_new_controls(codec, wm8976_dapm_widgets,
+wm8976.c:				  ARRAY_SIZE(wm8976_dapm_widgets));
+wm8976.c:		printk(KERN_WARNING"WM8976 N value outwith recommended range! N = %d\n",Ndiv);
+wm8976.c:static int wm8976_set_dai_pll(struct snd_soc_dai *codec_dai,
+wm8976.c:		reg = wm8976_read_reg_cache(codec, WM8976_POWER1);
+wm8976.c:		wm8976_write(codec, WM8976_POWER1, reg & 0x1df);
+wm8976.c:	wm8976_write(codec, WM8976_PLLN, (pll_div.pre << 4) | pll_div.n);
+wm8976.c:	wm8976_write(codec, WM8976_PLLK1, pll_div.k >> 18);
+wm8976.c:	wm8976_write(codec, WM8976_PLLK1, (pll_div.k >> 9) && 0x1ff);
+wm8976.c:	wm8976_write(codec, WM8976_PLLK1, pll_div.k && 0x1ff);
+wm8976.c:	reg = wm8976_read_reg_cache(codec, WM8976_POWER1);
+wm8976.c:	wm8976_write(codec, WM8976_POWER1, reg | 0x020);
+wm8976.c:static int wm8976_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+wm8976.c:static int wm8976_set_dai_fmt(struct snd_soc_dai *codec_dai,
+wm8976.c:	u16 iface = wm8976_read_reg_cache(codec, WM8976_IFACE) & 0x7;
+wm8976.c:	u16 clk = wm8976_read_reg_cache(codec, WM8976_CLOCK) & 0xfffe;
+wm8976.c:	wm8976_write(codec, WM8976_IFACE, iface);
+wm8976.c:	wm8976_write(codec, WM8976_CLOCK, clk);
+wm8976.c:static int wm8976_hw_params(struct snd_pcm_substream *substream,
+wm8976.c:	u16 iface = wm8976_read_reg_cache(codec, WM8976_IFACE) & 0xff9f;
+wm8976.c:	u16 adn = wm8976_read_reg_cache(codec, WM8976_ADD) & 0x1f1;
+wm8976.c:	wm8976_write(codec, WM8976_IFACE, iface);
+wm8976.c:	wm8976_write(codec, WM8976_ADD, adn);
+wm8976.c:static int wm8976_set_dai_clkdiv(struct snd_soc_dai *codec_dai,
+wm8976.c:	case WM8976_MCLKDIV:
+wm8976.c:		reg = wm8976_read_reg_cache(codec, WM8976_CLOCK) & 0x11f;
+wm8976.c:		wm8976_write(codec, WM8976_CLOCK, reg | div);
+wm8976.c:	case WM8976_BCLKDIV:
+wm8976.c:		reg = wm8976_read_reg_cache(codec, WM8976_CLOCK) & 0x1c7;
+wm8976.c:		wm8976_write(codec, WM8976_CLOCK, reg | div);
+wm8976.c:	case WM8976_OPCLKDIV:
+wm8976.c:		reg = wm8976_read_reg_cache(codec, WM8976_GPIO) & 0x1cf;
+wm8976.c:		wm8976_write(codec, WM8976_GPIO, reg | div);
+wm8976.c:	case WM8976_DACOSR:
+wm8976.c:		reg = wm8976_read_reg_cache(codec, WM8976_DAC) & 0x1f7;
+wm8976.c:		wm8976_write(codec, WM8976_DAC, reg | div);
+wm8976.c:	case WM8976_ADCOSR:
+wm8976.c:		reg = wm8976_read_reg_cache(codec, WM8976_ADC) & 0x1f7;
+wm8976.c:		wm8976_write(codec, WM8976_ADC, reg | div);
+wm8976.c:	case WM8976_MCLKSEL:
+wm8976.c:		reg = wm8976_read_reg_cache(codec, WM8976_CLOCK) & 0x0ff;
+wm8976.c:		wm8976_write(codec, WM8976_CLOCK, reg | div);
+wm8976.c:static int wm8976_mute(struct snd_soc_dai *dai, int mute)
+wm8976.c:	u16 mute_reg = wm8976_read_reg_cache(codec, WM8976_DAC) & 0xffbf;
+wm8976.c:		wm8976_write(codec, WM8976_DAC, mute_reg | 0x40);
+wm8976.c:		wm8976_write(codec, WM8976_DAC, mute_reg);
+wm8976.c:void wm8976_set_mute(int mute)
+wm8976.c:    	u16 mute_reg = wm8976_read_reg_cache(g_codec, WM8976_DAC) & 0xffbf;
+wm8976.c:    	u16 mute_reg1 = wm8976_read_reg_cache(g_codec, WM8976_HPVOLL) & 0xffbf;
+wm8976.c:    	u16 mute_reg2 = wm8976_read_reg_cache(g_codec, WM8976_HPVOLR) & 0xffbf;
+wm8976.c:    	u16 mute_reg3 = wm8976_read_reg_cache(g_codec, WM8976_SPKVOLL) & 0xffbf;
+wm8976.c:    	u16 mute_reg4 = wm8976_read_reg_cache(g_codec, WM8976_SPKVOLR) & 0xffbf;
+wm8976.c:            wm8976_write(g_codec, WM8976_DAC, mute_reg | 0x40);
+wm8976.c:            wm8976_write(g_codec, WM8976_HPVOLL, mute_reg1 | 0x40);
+wm8976.c:            wm8976_write(g_codec, WM8976_HPVOLR, mute_reg2 | 0x40);
+wm8976.c:            wm8976_write(g_codec, WM8976_SPKVOLL, mute_reg3 | 0x40);
+wm8976.c:            wm8976_write(g_codec, WM8976_SPKVOLR, mute_reg4 | 0x40);
+wm8976.c:            wm8976_write(g_codec, WM8976_DAC, mute_reg);
+wm8976.c:            wm8976_write(g_codec, WM8976_HPVOLL, mute_reg1);
+wm8976.c:            wm8976_write(g_codec, WM8976_HPVOLR, mute_reg2);
+wm8976.c:            wm8976_write(g_codec, WM8976_SPKVOLL, mute_reg3);
+wm8976.c:            wm8976_write(g_codec, WM8976_SPKVOLR, mute_reg4);
+wm8976.c:EXPORT_SYMBOL_GPL(wm8976_set_mute);
+wm8976.c:static int wm8976_set_bias_level(struct snd_soc_codec *codec,
+wm8976.c:	u16 pwr_reg = wm8976_read_reg_cache(codec,WM8976_POWER1) & 0x0fc;
+wm8976.c:	wm8976_write(codec, WM8976_INPUT, 0x03);
+wm8976.c:		wm8976_write(codec, WM8976_POWER1, pwr_reg|0x01D);
+wm8976.c:	     	wm8976_write(codec, WM8976_POWER1, pwr_reg|0x001F);
+wm8976.c:		wm8976_write(codec, WM8976_POWER1, pwr_reg|0x001E);
+wm8976.c:		//wm8976_write(codec, WM8976_POWER1, 0x0);
+wm8976.c:		//wm8976_write(codec, WM8976_POWER2, 0x0);
+wm8976.c:		//wm8976_write(codec, WM8976_POWER3, 0x0);
+wm8976.c:#define WM8976_RATES \
+wm8976.c:#define WM8976_FORMATS \
+wm8976.c:struct snd_soc_dai wm8976_dai = {
+wm8976.c:	.name = "WM8976 HiFi",
+wm8976.c:		.rates = WM8976_RATES,
+wm8976.c:		.formats = WM8976_FORMATS,},
+wm8976.c:		.rates = WM8976_RATES,
+wm8976.c:		.formats = WM8976_FORMATS,},
+wm8976.c:		.hw_params = wm8976_hw_params,
+wm8976.c:		.set_fmt = wm8976_set_dai_fmt,
+wm8976.c:		.set_clkdiv = wm8976_set_dai_clkdiv,
+wm8976.c:		.set_pll = wm8976_set_dai_pll,
+wm8976.c:		.digital_mute = wm8976_mute,
+wm8976.c:		.set_fmt = wm8976_set_dai_fmt,
+wm8976.c:		.set_clkdiv = wm8976_set_dai_clkdiv,
+wm8976.c:		.set_pll = wm8976_set_dai_pll,
+wm8976.c:		.set_sysclk = wm8976_set_dai_sysclk,
+wm8976.c:EXPORT_SYMBOL_GPL(wm8976_dai);
+wm8976.c:static int wm8976_suspend(struct platform_device *pdev, pm_message_t state)
+wm8976.c:	wm8976_set_bias_level(codec, SND_SOC_BIAS_OFF);
+wm8976.c:static int wm8976_resume(struct platform_device *pdev)
+wm8976.c:	for (i = 0; i < ARRAY_SIZE(wm8976_reg); i++)
+wm8976.c:	wm8976_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+wm8976.c:	wm8976_set_bias_level(codec, codec->suspend_bias_level);
+wm8976.c: * initialise the WM8976 driver
+wm8976.c:static int wm8976_init(struct snd_soc_device* socdev)
+wm8976.c:	printk("wm8976_init\n");
+wm8976.c:	codec->name = "WM8976";
+wm8976.c:	codec->read = wm8976_read_reg_cache;
+wm8976.c:	codec->write = wm8976_write;
+wm8976.c:	codec->set_bias_level = wm8976_set_bias_level;
+wm8976.c:	codec->dai = &wm8976_dai;
+wm8976.c:	codec->reg_cache_size = ARRAY_SIZE(wm8976_reg);
+wm8976.c:	codec->reg_cache = kmemdup(wm8976_reg, sizeof(wm8976_reg), GFP_KERNEL);
+wm8976.c:	wm8976_reset(codec);
+wm8976.c:	wm8976_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
+wm8976.c:        wm8976_write(codec, WM8976_IFACE, 0x010);
+wm8976.c:	wm8976_write(codec, WM8976_CLOCK, 0x000);
+wm8976.c:	wm8976_write(codec, WM8976_BEEP, 0x010);
+wm8976.c:        reg = wm8976_read_reg_cache(codec, WM8976_DACVOLL);
+wm8976.c:        wm8976_write(codec, WM8976_DACVOLL, reg | 0x0100);
+wm8976.c:        reg = wm8976_read_reg_cache(codec, WM8976_DACVOLR);
+wm8976.c:        wm8976_write(codec, WM8976_DACVOLR, reg | 0x0100);
+wm8976.c:        reg = wm8976_read_reg_cache(codec, WM8976_ADCVOL);
+wm8976.c:        wm8976_write(codec, WM8976_ADCVOL, reg | 0x01ff);
+wm8976.c:        reg = wm8976_read_reg_cache(codec, WM8976_INPPGA);
+wm8976.c:        wm8976_write(codec, WM8976_INPPGA, reg | 0x01BF);  // 63/63 % PGA  
+wm8976.c:        reg = wm8976_read_reg_cache(codec, WM8976_HPVOLL);
+wm8976.c:        wm8976_write(codec, WM8976_HPVOLL, reg | 0x0100);
+wm8976.c:        reg = wm8976_read_reg_cache(codec, WM8976_HPVOLR);
+wm8976.c:        wm8976_write(codec, WM8976_HPVOLR, reg | 0x0100);
+wm8976.c:        reg = wm8976_read_reg_cache(codec, WM8976_SPKVOLL);
+wm8976.c:        wm8976_write(codec, WM8976_SPKVOLL, reg | 0x0100);
+wm8976.c:        reg = wm8976_read_reg_cache(codec, WM8976_SPKVOLR);
+wm8976.c:        wm8976_write(codec, WM8976_SPKVOLR, reg | 0x0100);
+wm8976.c:	wm8976_write(codec, WM8976_GPIO, 0x008);     /* R8*/	
+wm8976.c:	wm8976_write(codec, WM8976_ADD, 0x001);      /* slow clock enabled */	
+wm8976.c:	wm8976_write(codec, WM8976_JACK1, 0x050);    /* selected GPIO2 as jack detection input and Enable*/	
+wm8976.c:	wm8976_write(codec, WM8976_JACK2, 0x021);    /* OUT2_EN_0 and OUT2_EN_1 */
+wm8976.c:		printk(KERN_ERR "wm8976: failed to create pcms\n");
+wm8976.c:	//wm8976_set_bias_level(codec, SND_SOC_BIAS_OFF);
+wm8976.c:	wm8976_write(codec, WM8976_INPUT, 0x03);
+wm8976.c:	wm8976_add_controls(codec);
+wm8976.c:	wm8976_add_widgets(codec);
+wm8976.c:	      	printk(KERN_ERR "wm8976: failed to register card\n");
+wm8976.c:static struct snd_soc_device *wm8976_socdev;
+wm8976.c:static int wm8976_i2c_probe(struct i2c_client *i2c,
+wm8976.c:	struct snd_soc_device *socdev = wm8976_socdev;
+wm8976.c:	ret = wm8976_init(socdev);
+wm8976.c:		dev_err(&i2c->dev, "failed to initialise WM8976\n");
+wm8976.c:static int wm8976_i2c_remove(struct i2c_client *client)
+wm8976.c:static const struct i2c_device_id wm8976_i2c_id[] = {
+wm8976.c:	{ "wm8976", 0 },
+wm8976.c:MODULE_DEVICE_TABLE(i2c, wm8976_i2c_id);
+wm8976.c:static struct i2c_driver wm8976_i2c_driver = {
+wm8976.c:		.name = "WM8976 I2C Codec",
+wm8976.c:	.probe    = wm8976_i2c_probe,
+wm8976.c:	.remove   = wm8976_i2c_remove,
+wm8976.c:	.id_table = wm8976_i2c_id,
+wm8976.c:static int wm8976_add_i2c_device(struct platform_device *pdev,
+wm8976.c:				 const struct wm8976_setup_data *setup)
+wm8976.c:	ret = i2c_add_driver(&wm8976_i2c_driver);
+wm8976.c:	strlcpy(info.type, "wm8976", I2C_NAME_SIZE);
+wm8976.c:	i2c_del_driver(&wm8976_i2c_driver);
+wm8976.c:static int wm8976_probe(struct platform_device *pdev)
+wm8976.c:	struct wm8976_setup_data *setup;
+wm8976.c:	pr_info("WM8976 Audio Codec %s", WM8976_VERSION);
+wm8976.c:	wm8976_socdev = socdev;
+wm8976.c:		ret = wm8976_add_i2c_device(pdev, setup);
+wm8976.c:static int wm8976_remove(struct platform_device *pdev)
+wm8976.c:		wm8976_set_bias_level(codec, SND_SOC_BIAS_OFF);
+wm8976.c:	i2c_del_driver(&wm8976_i2c_driver);
+wm8976.c:struct snd_soc_codec_device soc_codec_dev_wm8976 = {
+wm8976.c:	.probe = 	wm8976_probe,
+wm8976.c:	.remove = 	wm8976_remove,
+wm8976.c:	.suspend = 	wm8976_suspend,
+wm8976.c:	.resume =	wm8976_resume,
+wm8976.c:EXPORT_SYMBOL_GPL(soc_codec_dev_wm8976);
+wm8976.c:static int __init wm8976_modinit(void)
+wm8976.c:	return snd_soc_register_dai(&wm8976_dai);
+wm8976.c:module_init(wm8976_modinit);
+wm8976.c:static void __exit wm8976_exit(void)
+wm8976.c:	snd_soc_unregister_dai(&wm8976_dai);
+wm8976.c:module_exit(wm8976_exit);
+wm8976.c:MODULE_DESCRIPTION("ASoC WM8976 driver");
+wm8976.h: * wm8976.h  --  WM8976 Soc Audio driver
+wm8976.h:#ifndef _WM8976_H
+wm8976.h:#define _WM8976_H
+wm8976.h:/* WM8976 register space */
+wm8976.h:#define WM8976_RESET		0x0
+wm8976.h:#define WM8976_POWER1		0x1
+wm8976.h:#define WM8976_POWER2		0x2
+wm8976.h:#define WM8976_POWER3		0x3
+wm8976.h:#define WM8976_IFACE		0x4
+wm8976.h:#define WM8976_COMP		0x5
+wm8976.h:#define WM8976_CLOCK		0x6
+wm8976.h:#define WM8976_ADD			0x7
+wm8976.h:#define WM8976_GPIO			0x8
+wm8976.h:#define WM8976_JACK1        0x9
+wm8976.h:#define WM8976_DAC			0xa
+wm8976.h:#define WM8976_DACVOLL	    0xb
+wm8976.h:#define WM8976_DACVOLR      0xc
+wm8976.h:#define WM8976_JACK2        0xd
+wm8976.h:#define WM8976_ADC			0xe
+wm8976.h:#define WM8976_ADCVOL		0xf
+wm8976.h:#define WM8976_EQ1			0x12
+wm8976.h:#define WM8976_EQ2			0x13
+wm8976.h:#define WM8976_EQ3			0x14
+wm8976.h:#define WM8976_EQ4			0x15
+wm8976.h:#define WM8976_EQ5			0x16
+wm8976.h:#define WM8976_DACLIM1		0x18
+wm8976.h:#define WM8976_DACLIM2		0x19
+wm8976.h:#define WM8976_NOTCH1		0x1b
+wm8976.h:#define WM8976_NOTCH2		0x1c
+wm8976.h:#define WM8976_NOTCH3		0x1d
+wm8976.h:#define WM8976_NOTCH4		0x1e
+wm8976.h:#define WM8976_ALC1			0x20
+wm8976.h:#define WM8976_ALC2			0x21
+wm8976.h:#define WM8976_ALC3			0x22
+wm8976.h:#define WM8976_NGATE		0x23
+wm8976.h:#define WM8976_PLLN			0x24
+wm8976.h:#define WM8976_PLLK1		0x25
+wm8976.h:#define WM8976_PLLK2		0x26
+wm8976.h:#define WM8976_PLLK3		0x27
+wm8976.h:#define WM8976_3D           0x29
+wm8976.h:#define WM8976_BEEP         0x2b
+wm8976.h:#define WM8976_INPUT		0x2c
+wm8976.h:#define WM8976_INPPGA	  	0x2d
+wm8976.h:#define WM8976_ADCBOOST		0x2f
+wm8976.h:#define WM8976_OUTPUT		0x31
+wm8976.h:#define WM8976_MIXL	        0x32
+wm8976.h:#define WM8976_MIXR         0x33
+wm8976.h:#define WM8976_HPVOLL		0x34
+wm8976.h:#define WM8976_HPVOLR       0x35
+wm8976.h:#define WM8976_SPKVOLL      0x36
+wm8976.h:#define WM8976_SPKVOLR      0x37
+wm8976.h:#define WM8976_OUT3MIX		0x38
+wm8976.h:#define WM8976_MONOMIX      0x39
+wm8976.h:#define WM8976_CACHEREGNUM 	58
+wm8976.h: * WM8976 Clock dividers
+wm8976.h:#define WM8976_MCLKDIV 		0
+wm8976.h:#define WM8976_BCLKDIV		1
+wm8976.h:#define WM8976_OPCLKDIV		2
+wm8976.h:#define WM8976_DACOSR		3
+wm8976.h:#define WM8976_ADCOSR		4
+wm8976.h:#define WM8976_MCLKSEL		5
+wm8976.h:#define WM8976_MCLK_MCLK		(0 << 8)
+wm8976.h:#define WM8976_MCLK_PLL			(1 << 8)
+wm8976.h:#define WM8976_MCLK_DIV_1		(0 << 5)
+wm8976.h:#define WM8976_MCLK_DIV_1_5		(1 << 5)
+wm8976.h:#define WM8976_MCLK_DIV_2		(2 << 5)
+wm8976.h:#define WM8976_MCLK_DIV_3		(3 << 5)
+wm8976.h:#define WM8976_MCLK_DIV_4		(4 << 5)
+wm8976.h:#define WM8976_MCLK_DIV_5_5		(5 << 5)
+wm8976.h:#define WM8976_MCLK_DIV_6		(6 << 5)
+wm8976.h:#define WM8976_BCLK_DIV_1		(0 << 2)
+wm8976.h:#define WM8976_BCLK_DIV_2		(1 << 2)
+wm8976.h:#define WM8976_BCLK_DIV_4		(2 << 2)
+wm8976.h:#define WM8976_BCLK_DIV_8		(3 << 2)
+wm8976.h:#define WM8976_BCLK_DIV_16		(4 << 2)
+wm8976.h:#define WM8976_BCLK_DIV_32		(5 << 2)
+wm8976.h:#define WM8976_DACOSR_64		(0 << 3)
+wm8976.h:#define WM8976_DACOSR_128		(1 << 3)
+wm8976.h:#define WM8976_ADCOSR_64		(0 << 3)
+wm8976.h:#define WM8976_ADCOSR_128		(1 << 3)
+wm8976.h:#define WM8976_OPCLK_DIV_1		(0 << 4)
+wm8976.h:#define WM8976_OPCLK_DIV_2		(1 << 4)
+wm8976.h:#define WM8976_OPCLK_DIV_3		(2 << 4)
+wm8976.h:#define WM8976_OPCLK_DIV_4		(3 << 4)
+wm8976.h:struct wm8976_setup_data {
+wm8976.h:extern struct snd_soc_dai wm8976_dai;
+wm8976.h:extern struct snd_soc_codec_device soc_codec_dev_wm8976;
