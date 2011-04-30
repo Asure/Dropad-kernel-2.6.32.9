@@ -10,6 +10,7 @@ This is not all my own work. Most of it comes from the MangoV210 project.
 Many things are working so far, but not everything is 100%:
 
 - Ext4, UBI, MTD, CPU support etc.
+- MTD mapping (needed for proper UBIfs functions), compatible with 01-03 firmwares and up only!
 - Boot up and into Android init. 
 - ADB works
 - Android starts, but doesn't like the missing ALSA (see below)
@@ -18,12 +19,11 @@ Todo/Not working:
 -----------------
 
 - ALSA WM8676 soc sound (stub driver is in place.)
-- MTD mapping See note.. (workaround by adding 'mtdparts' to u-boot. Need to add to kernel build.)
-- Buttons (cause kernel panic when you press power.)
 - Proper recovery image instead of tar.gz parsing crap from urbetter..
 - Overclock
+- Find out what else is broken, once we boot into Android. (sensor?)
 
-Note:
+Old fix for mtd partitioning:
 setenv bootargs "mtdparts=s5pv210-nand:0x20000@0x80000(misc),0x800000@0x100000(recovery),0x600000@0x900000(kernel),0xEB00000@0x1500000(rootfs-combin),0x200000@0x1300000(param)"
 
 Untested
@@ -32,6 +32,3 @@ Untested
 - PowerVR
 - Wifi
 - Touchscreen
-
-
-
