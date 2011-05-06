@@ -4,7 +4,7 @@ What is this
 A 2.6.32.9 GPL Licensed Kernel for the Dropad A8
 This is not all my own work. Most of it comes from the MangoV210 project.
 
-30-4-2011
+6-5-2011
 ---------
 
 Many things are working so far, but not everything is 100%:
@@ -20,12 +20,14 @@ Todo/Not working:
 
 - Need to add ALSA WM8676 soc sound for on-board soundcard. (stub driver is in place.)
 - Need to add ALSA WM8580 soc sound (HDMI audio uses it.)
+  (Allmost all the ALSA stuff is here: https://github.com/richardtrip/galaxytab_kernel)
 - Need to port mma7660 orientation sensor
 - Need to score source code for the touch screen (ft5x0x_ts)
 - Need to grab ut7gm framebuffer lcd/backlight code from 2.6.29 
-(see here for 2.6.29 https://github.com/kboek/android-urbetter/tree/master/kernel/urbetter)
+  (See here for 2.6.29 https://github.com/kboek/android-urbetter/tree/master/kernel/urbetter)
 - Need to add GC0308 UVC video camera driver (appears to be connected to USB..)
 - Overclock, once everything seems stable.
+  (All the missing stuff is here: https://github.com/richardtrip/galaxytab_kernel)
 - Find out what else is broken, once we boot into Android.
 
 Old fix for mtd partitioning:
