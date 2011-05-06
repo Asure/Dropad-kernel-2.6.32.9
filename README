@@ -22,7 +22,8 @@ Todo/Not working:
 - Need to add ALSA WM8580 soc sound (HDMI audio uses it.)
 - Need to port mma7660 orientation sensor
 - Need to score source code for the touch screen (ft5x0x_ts)
-- Need to grab ut7gm framebuffer lcd/backlight code from 2.6.29
+- Need to grab ut7gm framebuffer lcd/backlight code from 2.6.29 
+(see here for 2.6.29 https://github.com/kboek/android-urbetter/tree/master/kernel/urbetter)
 - Need to add GC0308 UVC video camera driver (appears to be connected to USB..)
 - Overclock, once everything seems stable.
 - Find out what else is broken, once we boot into Android.
