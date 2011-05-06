@@ -18,10 +18,14 @@ Many things are working so far, but not everything is 100%:
 Todo/Not working:
 -----------------
 
-- ALSA WM8676 soc sound (stub driver is in place.)
-- Proper recovery image instead of tar.gz parsing crap from urbetter..
-- Overclock
-- Find out what else is broken, once we boot into Android. (sensor?)
+- Need to add ALSA WM8676 soc sound for on-board soundcard. (stub driver is in place.)
+- Need to add ALSA WM8580 soc sound (HDMI audio uses it.)
+- Need to port mma7660 orientation sensor
+- Need to score source code for the touch screen (ft5x0x_ts)
+- Need to grab ut7gm framebuffer lcd/backlight code from 2.6.29
+- Need to add GC0308 UVC video camera driver (appears to be connected to USB..)
+- Overclock, once everything seems stable.
+- Find out what else is broken, once we boot into Android.
 
 Old fix for mtd partitioning:
 setenv bootargs "mtdparts=s5pv210-nand:0x20000@0x80000(misc),0x800000@0x100000(recovery),0x600000@0x900000(kernel),0xEB00000@0x1500000(rootfs-combin),0x200000@0x1300000(param)"
