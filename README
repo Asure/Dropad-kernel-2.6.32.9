@@ -21,7 +21,7 @@ Todo/Not working:
 - Need to add ALSA WM8676 soc sound for on-board soundcard. (stub driver is in place.)
 - Need to add ALSA WM8580 soc sound (HDMI audio uses it.)
   (Allmost all the ALSA stuff is here: https://github.com/richardtrip/galaxytab_kernel)
-- Need to port mma7660 orientation sensor
+- Need to get mma7660 orientation sensor into shape.. (/drivers/input/misc)
 - Need to score source code for the touch screen (ft5x0x_ts)
 - Need to grab ut7gm framebuffer lcd/backlight code from 2.6.29 
   (See here for 2.6.29 https://github.com/kboek/android-urbetter/tree/master/kernel/urbetter)
