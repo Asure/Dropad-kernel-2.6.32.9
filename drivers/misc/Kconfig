@@ -95,6 +95,16 @@ config IBM_ASM
 	  information on the specific driver level and support statement
 	  for your IBM server.
 
+config MMA7660
+	tristate "Freescale MMA7660 Orientation Sensor"
+	default n
+	help
+	  Say Y here if you want support for the MMA7660 Motion Sensor
+	  device.
+	  
+	  To compile this driver as a module, choose M here: the
+	  module will be called MMA7660.
+	  
 config PHANTOM
 	tristate "Sensable PHANToM (PCI)"
 	depends on PCI
